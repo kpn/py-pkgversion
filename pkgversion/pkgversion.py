@@ -3,7 +3,6 @@ import os
 import re
 from subprocess import PIPE, Popen
 
-
 from pip.download import PipSession
 from pip.req import parse_requirements
 
