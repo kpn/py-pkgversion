@@ -10,7 +10,7 @@ setup(
     long_description=open('README.md').read(),
     author="Niels Lensink",
     author_email='niels@elements.nl',
-    url='https://stash.kpnnl.local/DE/py-pkgversion',
+    url='https://github.com/kpn-digital/py-pkgversion',
     install_requires=list_requirements('requirements/requirements-base.txt'),
     packages=find_packages(exclude=['pkgversion.tests*']),
     tests_require=['tox'],
