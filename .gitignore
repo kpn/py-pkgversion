@@ -160,6 +160,8 @@ docs/_build/
 # PyBuilder
 target/
 
+# Pip requirements
+/venv/
 
 ### Vim ###
 [._]*.s[a-w][a-z]
