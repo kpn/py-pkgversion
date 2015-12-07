@@ -7,7 +7,10 @@ test_py-pkgversion
 
 Tests for `py-pkgversion` module.
 """
+import ast
 import os
+import re
+import tempfile
 import unittest
 
 from pkgversion import (
@@ -18,11 +21,6 @@ from pkgversion import (
 requirements_file = os.path.join(
     os.path.dirname(__file__), 'fixtures/requirements.txt'
 )
-
-setup_py_expected_output = """
-from setuptools import setup
-setup(**{'install_requires': ['test'], 'version': '1.0.0'})
-"""
 
 
 class TestPkgversion(unittest.TestCase):
@@ -52,16 +50,18 @@ class TestPkgversion(unittest.TestCase):
 
     def test_get_git_repo_dir(self):
         assert os.path.isdir(get_git_repo_dir())
-        assert os.path.isdir(os.path.join(get_git_repo_dir(), '.git'))
+        assert os.path.isdir(os.path.join(get_git_repo_dir(), b'.git'))
 
     def test_get_git_repo_dir_invalid(self):
         pwd = os.getcwd()
         os.chdir('/tmp')
-        assert get_git_repo_dir() == None
+        assert get_git_repo_dir() is None
         os.chdir(pwd)
 
     def test_write_setup_py(self):
-        tmp_file = os.tempnam()
+        expected_import = "^from setuptools import setup$"
+        expected_setup = "^setup\(\*\*(.*)\)$"
+        _, tmp_file = tempfile.mkstemp()
         write_setup_py(
             file=tmp_file,
             version='1.0.0',
@@ -69,7 +69,19 @@ class TestPkgversion(unittest.TestCase):
         )
         try:
             with open(tmp_file, 'r') as f:
-                assert f.read() == setup_py_expected_output
+                generated = f.read().splitlines()
+                self.assertEqual(3, len(generated))
+                blank_line = generated[0]
+                import_line = generated[1]
+                setup_line = generated[2]
+                self.assertEqual('', blank_line)
+                assert re.match(expected_import, import_line) is not None
+                setup_args_match = re.match(expected_setup, setup_line)
+                assert setup_args_match is not None
+                d = ast.literal_eval(setup_args_match.groups()[0])
+                self.assertEqual(2, len(d))
+                self.assertEqual('1.0.0', d['version'])
+                self.assertEqual(['test'], d['install_requires'])
         finally:
             os.remove(tmp_file)
 

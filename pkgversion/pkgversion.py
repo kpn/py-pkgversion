@@ -3,6 +3,7 @@ import os
 import re
 from subprocess import PIPE, Popen
 
+
 from pip.download import PipSession
 from pip.req import parse_requirements
 
@@ -57,7 +58,7 @@ def get_version():
     cmd = ['git', 'describe', '--always', '--tags']
     p = Popen(cmd, stdout=PIPE, close_fds=True)
     version = p.stdout.read().strip()
-    return str(version) or None
+    return str(version) or "0.0.0"
 
 
 def pep440_version(version=get_version()):
@@ -96,7 +97,7 @@ def write_setup_py(file=None, **kwargs):
     data.update(kwargs)
 
     if not file:
-        file = os.path.join( get_git_repo_dir(), 'setup.py')
+        file = os.path.join(get_git_repo_dir(), 'setup.py')
 
     with open(file, 'w+') as f:
         f.write(setup_py_template.format(data))
