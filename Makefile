@@ -1,5 +1,5 @@
 # This Makefile requires the following commands to be available:
-# * virtualenv-2.7
+# * virtualenv
 # * python2.7
 # * docker
 # * docker-compose
@@ -14,7 +14,7 @@ TOX_PY_LIST="$(shell $(TOX) -l | grep ^py | xargs | sed -e 's/ /,/g')"
 
 .PHONY: clean docsclean pyclean test lint isort docs docker
 
-build: venv clean
+build: clean venv
 	$(TOX)
 
 pyclean:
@@ -28,7 +28,7 @@ clean: pyclean docsclean
 	@rm -rf venv
 
 venv:
-	@virtualenv-2.7 -p python2.7 venv
+	@virtualenv -p python2.7 venv
 	@$(PIP) install -U "pip>=7.0" -q
 	@$(PIP) install -r $(DEPS)
 
