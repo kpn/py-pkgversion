@@ -160,7 +160,8 @@ docs/_build/
 # PyBuilder
 target/
 
-# Pip requirements
+# Project files
+/setup.py
 /venv/
 
 ### Vim ###

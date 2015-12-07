@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from pkgversion import list_requirements, pep440_version
-from setuptools import setup, find_packages
+from pkgversion import list_requirements, pep440_version, write_setup_py
+from setuptools import find_packages
 
-setup(
+write_setup_py(
     name='py-pkgversion',
     version=pep440_version(),
     description="Versioning utils for python projects",
@@ -12,7 +12,7 @@ setup(
     author_email='niels@elements.nl',
     url='https://github.com/kpn-digital/py-pkgversion',
     install_requires=list_requirements('requirements/requirements-base.txt'),
-    packages=find_packages(exclude=['pkgversion.tests*']),
+    packages=find_packages(exclude=['tests*']),
     tests_require=['tox'],
     include_package_data=True,
     zip_safe=False,

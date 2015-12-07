@@ -53,3 +53,7 @@ docker:
 
 docker/%:
 	$(DOCKER_COMPOSE) run --rm app make $*
+
+publish:
+	$(PYTHON) setup_gen.py
+	$(PYTHON) setup.py sdist upload
