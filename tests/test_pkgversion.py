@@ -13,8 +13,8 @@ import re
 from subprocess import PIPE, Popen
 
 from pkgversion import (
-    get_git_repo_dir, get_version, list_requirements, pep440_version,
-    write_setup_py,
+    get_git_repo_dir, get_version, list_requirements, PIP_PEP503_ENFORCED, pep440_version,
+    pep503_package_name, write_setup_py,
 )
 
 requirements_file = os.path.join(
@@ -67,7 +67,20 @@ class TestPkgversion(object):
             'ranged_version<=2,>=1.0', 'url', 'unversioned_url',
             'editable'
         ]
+        if PIP_PEP503_ENFORCED:
+            expected = list(self._enforce_pep503_names(expected))
+
         assert actual == expected
+
+    def _enforce_pep503_names(self, requirements):
+        for item in requirements:
+            match = re.match('([^\s<=>]+)([\s<=>].+)?', item)
+            yield "".join(filter(None, (pep503_package_name(match.groups()[0]), match.groups()[1])))
+
+    def test_pep503_name(self):
+        test = 'some_package.name'
+        expected = 'some-package-name'
+        assert pep503_package_name(test) == expected
 
     def test_get_git_repo_dir(self):
         assert os.path.isdir(get_git_repo_dir())

@@ -3,7 +3,9 @@ import os
 import pprint
 import re
 from subprocess import PIPE, Popen
+import sys
 
+from pip import __version__ as pip_version
 from pip.download import PipSession
 from pip.req import parse_requirements
 
@@ -12,6 +14,11 @@ setup_py_template = """
 from setuptools import setup
 setup(**{0})
 """
+
+
+PY3 = sys.version_info[0] == 3
+PIP_VERSION = tuple(map(int, pip_version.split(".")))
+PIP_PEP503_ENFORCED = PY3 and (PIP_VERSION >= (8, 1, 1))
 
 
 def get_git_repo_dir():
@@ -45,7 +52,8 @@ def list_requirements(path):
     Returns:
         list: List of packages
     """
-    return [str(r.req) for r in parse_requirements(path, session=PipSession())]
+    result = [str(r.req) for r in parse_requirements(path, session=PipSession())]
+    return result
 
 
 def get_version():
@@ -130,6 +138,28 @@ def pep440_version(version=get_version()):
         return ''.join(parts)
 
     return None
+
+
+def pep503_package_name(name):
+    """
+    pip 8.1.1 with Python 3 enforces requirement:
+
+    This PEP references the concept of a "normalized" project name.
+    As per PEP 426 the only valid characters in a name are the ASCII alphabet,
+    ASCII numbers, . , - , and _ .
+    The name should be lowercased with all runs of the characters . , - , or _ replaced
+    with a single - character.
+
+    >>> pep503_package_name('some_package')
+    'some-package'
+
+    Args:
+        str name: Python package name.
+
+    Returns:
+        str: normalized package name in accordance with PEP503
+    """
+    return re.sub(r'[-_.]+', '-', name).lower()
 
 
 def write_setup_py(file=None, **kwargs):
