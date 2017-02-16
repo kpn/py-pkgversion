@@ -77,6 +77,11 @@ class TestPkgversion(object):
             match = re.match('([^\s<=>]+)([\s<=>].+)?', item)
             yield "".join(filter(None, (pep503_package_name(match.groups()[0]), match.groups()[1])))
 
+    def test_pep503_name(self):
+        test = 'some_package.name'
+        expected = 'some-package-name'
+        assert pep503_package_name(test) == expected
+
     def test_get_git_repo_dir(self):
         assert os.path.isdir(get_git_repo_dir())
         assert os.path.isdir(os.path.join(get_git_repo_dir(), '.git'))
