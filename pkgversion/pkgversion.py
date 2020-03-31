@@ -4,13 +4,16 @@ import pprint
 import re
 from subprocess import PIPE, Popen
 
-try:
-    from pip._internal.download import PipSession
+try:  # pip20+
+    from pip._internal.network.session import PipSession
     from pip._internal.req import parse_requirements
 except ImportError:
-    # Output expected ImportErrors for PIP < 10.
-    from pip.download import PipSession
-    from pip.req import parse_requirements
+    try:  # pip10+
+        from pip._internal.download import PipSession
+        from pip._internal.req import parse_requirements
+    except ImportError:   # pip<10
+        from pip.download import PipSession
+        from pip.req import parse_requirements
 
 
 setup_py_template = """

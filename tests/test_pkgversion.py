@@ -97,7 +97,7 @@ class TestPkgversion(object):
                 Popen(command, stdout=PIPE, cwd=str(tmpdir)).communicate()
 
             expected_import = "^from setuptools import setup$"
-            expected_setup = "^setup\(\*\*(.*)\)$"
+            expected_setup = "^setup\(\*\*(.*)\)$"  # noqa: W605
 
             write_setup_py(
                 install_requires=['test']
