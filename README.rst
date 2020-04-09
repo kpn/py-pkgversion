@@ -13,5 +13,13 @@ Python pkgversion
 .. image:: https://readthedocs.org/projects/py-pkgversion/badge/?version=latest
     :target: http://py-pkgversion.readthedocs.org/en/latest/?badge=latest
 
-
 Versioning utils for python projects
+
+Deprecation notice
+------------------
+
+This project is deprecated in favor of more popular tools:
+
+- for version generation from tags, you can use `setuptools_scm <https://pypi.org/project/setuptools-scm/>`_
+- for parsing requirements, you can use `requirementsLib <https://pypi.org/project/requirementslib/>`_
+
