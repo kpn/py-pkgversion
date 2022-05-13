@@ -15,6 +15,11 @@ Python pkgversion
 
 Versioning utils for python projects
 
+NOT MAINTAINED
+--------------
+
+This repository is not actively maintained anymore.
+
 Deprecation notice
 ------------------
 
